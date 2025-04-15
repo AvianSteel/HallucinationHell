@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Flowers
   - Miasma
+  - Upgrade
+  - LevelEnd
+  - Ground
   layers:
   - Default
   - TransparentFX

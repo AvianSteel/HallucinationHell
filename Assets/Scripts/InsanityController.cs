@@ -6,14 +6,17 @@
 // Brief Description : Adjusts the value for the insanity meter, performing
 effects such as monster spawning if high enough
 *****************************************************************************/
+using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class InsanityController : MonoBehaviour
 {
     [SerializeField] private PlayerController playerController;
     [SerializeField] private GameObject insanityMonster;
+    [SerializeField] private TMP_Text insanityText;
 
-    private int insanity;
+    [SerializeField] private int insanity;
 
     public int Insanity { get => insanity; set => insanity = value; }
 
@@ -36,7 +39,10 @@ public class InsanityController : MonoBehaviour
     /// </summary>
     private void Start()
     {
+        insanity = 0;
+        insanityText.gameObject.SetActive(true);
         InsanityCheck(insanity);
+        StartCoroutine(InsaneUp());
     }
 
     /// <summary>
@@ -74,6 +80,7 @@ public class InsanityController : MonoBehaviour
         {
             insanity = 0;
         }
+        InsanityUpdate();
     }
     /// <summary>
     /// When insanity is high enough, the monster spawns
@@ -81,5 +88,24 @@ public class InsanityController : MonoBehaviour
     private void SpawnMonster()
     {
         insanityMonster.SetActive(true);
+    }
+
+    IEnumerator InsaneUp()
+    {
+        while (true)
+        {
+            insanity = insanity +1;
+            InsanityCheck(insanity);
+            yield return new WaitForSeconds(1);
+        }
+    }
+
+    private void InsanityUpdate()
+    {
+        insanityText.text = "Insanity: " + insanity.ToString();
+    }
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
     }
 }

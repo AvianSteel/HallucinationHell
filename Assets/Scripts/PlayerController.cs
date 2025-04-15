@@ -53,13 +53,14 @@ public class PlayerController : MonoBehaviour
     private Vector3 temprbv;
 
     [SerializeField] private GameObject pausePanel;
-    [SerializeField] private TMP_Text insanityText;
 
-    private bool HAS_UMBRELLA;
+    static private bool HAS_UMBRELLA = false;
     private bool isFloat;
 
     private float floatFall;
     public bool IsPaused { get => isPaused; set => isPaused = value; }
+
+    [SerializeField] private LevelEndController levelEndController;
 
     /// <summary>
     /// Sets up player input and important variables
@@ -102,8 +103,6 @@ public class PlayerController : MonoBehaviour
 
         pausePanel.gameObject.SetActive(false);
 
-        insanityText.gameObject.SetActive(true);
-        insanityText.text = "Insanity: " + insanityLevel.ToString();
 
         parasol.gameObject.SetActive(false);
 
@@ -117,7 +116,37 @@ public class PlayerController : MonoBehaviour
 
     //Looks for the level controller that sets the bools of the movement options, and stat modifiers
 
+    #region Actions Cancel
 
+    /// <summary>
+    /// Stops movement in direction not held
+    /// </summary>
+    /// <param name="obj"></param>
+
+    private void Right_canceled(InputAction.CallbackContext obj)
+    {
+        
+        rightValue = new Vector3(0, rb.velocity.y, 0);
+        isMovingRight = false;
+    }
+
+    private void Left_canceled(InputAction.CallbackContext obj)
+    {
+        leftValue = new Vector3(0, rb.velocity.y, 0);
+        isMovingLeft = false;
+    }
+
+    private void Backward_canceled(InputAction.CallbackContext obj)
+    {
+        backwardValue = new Vector3(0, rb.velocity.y, 0);
+        isMovingBackward = false;
+    }
+
+    private void Forward_canceled(InputAction.CallbackContext obj)
+    {
+        forwardValue = new Vector3(0, rb.velocity.y, 0);
+        isMovingForward = false;
+    }
     private void Umbrella_canceled(InputAction.CallbackContext context)
     {
         if (!isGrounded && HAS_UMBRELLA)
@@ -126,7 +155,9 @@ public class PlayerController : MonoBehaviour
             parasol.gameObject.SetActive(false);
         }
     }
+    #endregion
 
+    #region Actions Start
     private void Umbrella_started(InputAction.CallbackContext obj)
     {
         if (!isGrounded && HAS_UMBRELLA)
@@ -135,7 +166,6 @@ public class PlayerController : MonoBehaviour
             parasol.gameObject.SetActive(true);
         }
     }
-
     private void Pause_started(InputAction.CallbackContext obj)
     {
         IsPaused = !IsPaused;
@@ -172,46 +202,11 @@ public class PlayerController : MonoBehaviour
         }
        
     }
-    #region Actions Cancel
-
-    /// <summary>
-    /// Stops movement in direction not held
-    /// </summary>
-    /// <param name="obj"></param>
-
-    private void Right_canceled(InputAction.CallbackContext obj)
-    {
-        
-        rightValue = new Vector3(0, rb.velocity.y, 0);
-        isMovingRight = false;
-    }
-
-    private void Left_canceled(InputAction.CallbackContext obj)
-    {
-        leftValue = new Vector3(0, rb.velocity.y, 0);
-        isMovingLeft = false;
-    }
-
-    private void Backward_canceled(InputAction.CallbackContext obj)
-    {
-        backwardValue = new Vector3(0, rb.velocity.y, 0);
-        isMovingBackward = false;
-    }
-
-    private void Forward_canceled(InputAction.CallbackContext obj)
-    {
-        forwardValue = new Vector3(0, rb.velocity.y, 0);
-        isMovingForward = false;
-    }
-    #endregion
-
-    #region Actions Start
 
     /// <summary>
     /// Starts movement in directions currently pressed
     /// </summary>
     /// <param name="obj"></param>
-
     private void Right_started(InputAction.CallbackContext obj)
     {
         isMovingRight = true;
@@ -294,9 +289,6 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector3(rb.velocity.x, temprbv.y, rb.velocity.z);
         }
 
-        insanityLevel = insanityController.Insanity;
-        insanityText.text = "Insanity: " + insanityLevel.ToString();
-
         if (!isPaused)
         {
             Cursor.visible = false;
@@ -309,16 +301,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    #region Collision and Triggers
     /// <summary>
     /// Refreshes jump ability
     /// </summary>
     /// <param name="collision"></param>
     private void OnCollisionEnter(Collision collision)
     {
-        isGrounded = true;
-        isFloat = false;
-        floatFall = -0.75f;
-        parasol.gameObject.SetActive(false);
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+            isFloat = false;
+            floatFall = -0.75f;
+            parasol.gameObject.SetActive(false);
+        }
+        
     }
 
     /// <summary>
@@ -327,7 +324,11 @@ public class PlayerController : MonoBehaviour
     /// <param name="collision"></param>
     private void OnCollisionExit(Collision collision)
     {
-        isGrounded = false;
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
+        }
+        
     }
 
     /// <summary>
@@ -343,6 +344,22 @@ public class PlayerController : MonoBehaviour
         else if (other.gameObject.CompareTag("Flowers"))
         {
             insanityController.DecreaseInsanity(50);
+        }
+        else if (other.gameObject.CompareTag("Upgrade"))
+        {
+            UpgradeCheck(other);
+        }else if (other.gameObject.CompareTag("LevelEnd"))
+        { 
+            levelEndController.NextLevel();
+        }
+    }
+    #endregion
+    private void UpgradeCheck(Collider other)
+    {
+        if(other.gameObject.name == "Umbrella")
+        {
+            HAS_UMBRELLA = true;
+            Destroy(other.gameObject);
         }
     }
 
