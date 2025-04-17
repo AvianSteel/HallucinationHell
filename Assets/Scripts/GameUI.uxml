@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="InsanityBarBackground" style="flex-grow: 1; position: absolute; width: 50px; height: 200px; background-image: url(&quot;project://database/Assets/Textures/InsanityBarBackground.png?fileID=2800000&amp;guid=05f7a89508c94954e8dec24b986e0a29&amp;type=3#InsanityBarBackground&quot;); left: 10px; top: 10px;">
+        <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="InsanityLabel" style="-unity-text-align: upper-center; position: absolute; height: 100%; width: 100%;" />
+    </ui:VisualElement>
+</ui:UXML>

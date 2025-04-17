@@ -39,7 +39,6 @@ public class InsanityController : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        insanity = 0;
         insanityText.gameObject.SetActive(true);
         InsanityCheck(insanity);
         StartCoroutine(InsaneUp());

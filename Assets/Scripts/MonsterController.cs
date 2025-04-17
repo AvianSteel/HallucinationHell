@@ -6,6 +6,8 @@
 // Brief Description : Controls the AI of the monster when close to the player,
 or far away
 *****************************************************************************/
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class MonsterController : MonoBehaviour
@@ -17,6 +19,9 @@ public class MonsterController : MonoBehaviour
     private int currentIndex;
     [SerializeField] private GameObject[] movePoints;
     [SerializeField] private float speed;
+    private bool playSound;
+
+    private Coroutine chaseSoundPlay;
 
     /// <summary>
     /// Starts the monster on its patrol path
@@ -34,10 +39,11 @@ public class MonsterController : MonoBehaviour
     {
         if(Vector3.Distance(transform.position, player.transform.position) > detectionDistance)
         {
+            playSound = false;
             if (Vector3.Distance(transform.position, movePoints[currentIndex].transform.position) < 0.1f)
             {
                 currentIndex++;
-
+                StopCoroutine(chaseSoundPlay);
                 //Prevents currentIndex from being larger than the array of gameObjects
                 if (currentIndex == movePoints.Length)
                 {
@@ -49,8 +55,19 @@ public class MonsterController : MonoBehaviour
                 speed * Time.deltaTime);
         }else if (Vector3.Distance(transform.position,player.transform.position) <= detectionDistance)
         {
+            playSound = true;
+            chaseSoundPlay = StartCoroutine(MonsterSound());
             transform.position = Vector3.MoveTowards(transform.position, player.transform.position,
                 speed * Time.deltaTime);
         }
+    }
+    IEnumerator MonsterSound()
+    {
+        while (playSound)
+        {
+            Debug.Log("Working");
+            yield return new WaitForSeconds(0.5f);
+        }
+
     }
 }
