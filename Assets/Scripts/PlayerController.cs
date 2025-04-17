@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 temprbv;
 
     [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject pauseMenu;
 
     static private bool HAS_UMBRELLA = false;
     private bool isFloat;
@@ -61,6 +62,8 @@ public class PlayerController : MonoBehaviour
     public bool IsPaused { get => isPaused; set => isPaused = value; }
 
     [SerializeField] private LevelEndController levelEndController;
+    [SerializeField] private GameObject upgradeSpotlight;
+    [SerializeField] private Level1Controller level1Controller;
 
     /// <summary>
     /// Sets up player input and important variables
@@ -173,6 +176,7 @@ public class PlayerController : MonoBehaviour
         {
             Time.timeScale = 0;
             pausePanel.gameObject.SetActive(true);
+            pauseMenu.gameObject.SetActive(true);
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             IsPaused = true;
@@ -181,7 +185,9 @@ public class PlayerController : MonoBehaviour
         else if (!IsPaused)
         {
             Time.timeScale = 1;
+            level1Controller.HideTutorial();
             pausePanel.gameObject.SetActive(false);
+            pauseMenu.gameObject.SetActive(false);
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             IsPaused = false;
@@ -360,6 +366,10 @@ public class PlayerController : MonoBehaviour
         {
             HAS_UMBRELLA = true;
             Destroy(other.gameObject);
+            Destroy(upgradeSpotlight.gameObject);
+            isPaused= true;
+            level1Controller.UmbrellaTutorial();
+            
         }
     }
 
