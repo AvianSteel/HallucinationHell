@@ -6,6 +6,7 @@
 // Brief Description : Player Movement, Collisions, and Triggers
 *****************************************************************************/
 using System;
+using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -19,6 +20,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpHeight;
     private float rotationValue;
     [SerializeField] private GameObject parasol;
+    [SerializeField] private GameObject staff;
 
     [SerializeField]  private bool isGrounded;
 
@@ -33,6 +35,7 @@ public class PlayerController : MonoBehaviour
     private InputAction horizontalCamera;
     private InputAction pause;
     private InputAction umbrella;
+    private InputAction attack;
 
     private bool isMovingForward;
     private bool isMovingBackward;
@@ -56,6 +59,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
 
     static private bool HAS_UMBRELLA = false;
+    static private bool HAS_STAFF = false;
     private bool isFloat;
 
     private float floatFall;
@@ -64,6 +68,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LevelEndController levelEndController;
     [SerializeField] private GameObject upgradeSpotlight;
     [SerializeField] private Level1Controller level1Controller;
+    [SerializeField] private Level2Controller level2Controller;
 
     /// <summary>
     /// Sets up player input and important variables
@@ -80,6 +85,7 @@ public class PlayerController : MonoBehaviour
         horizontalCamera = playerInput.currentActionMap.FindAction("HorizontalCamera");
         pause = playerInput.currentActionMap.FindAction("Pause");
         umbrella = playerInput.currentActionMap.FindAction("HoldUmbrella");
+        attack = playerInput.currentActionMap.FindAction("Attack");
         
 
         forward.started += Forward_started;
@@ -89,6 +95,7 @@ public class PlayerController : MonoBehaviour
         horizontalCamera.started += HorizontalCamera_started;
         pause.started += Pause_started;
         umbrella.started += Umbrella_started;
+        attack.started += Attack_started;
 
         forward.canceled += Forward_canceled;
         backward.canceled += Backward_canceled;
@@ -108,6 +115,7 @@ public class PlayerController : MonoBehaviour
 
 
         parasol.gameObject.SetActive(false);
+        staff.gameObject.SetActive(false);
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -115,6 +123,8 @@ public class PlayerController : MonoBehaviour
         Time.timeScale = 1;
 
     }
+
+
 
 
     //Looks for the level controller that sets the bools of the movement options, and stat modifiers
@@ -168,6 +178,15 @@ public class PlayerController : MonoBehaviour
             isFloat = true;
             parasol.gameObject.SetActive(true);
         }
+    }    
+    private void Attack_started(InputAction.CallbackContext obj)
+    {
+        if (HAS_STAFF)
+        {
+            staff.gameObject.SetActive(true);
+            StartCoroutine(AttackTimer());
+        }
+
     }
     private void Pause_started(InputAction.CallbackContext obj)
     {
@@ -247,7 +266,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
+    IEnumerator AttackTimer()
+    {
+        for (int i = 0; i < 1; i++)
+        {
+            yield return new WaitForSeconds(1);
+        }
+        staff.gameObject.SetActive(false);
+    }
     /// <summary>
     /// Breaks down each input into various vectors of different directions, then adds them togeter to allow
     /// movement based on the camera position, and is still 8-way
@@ -370,6 +396,12 @@ public class PlayerController : MonoBehaviour
             isPaused= true;
             level1Controller.UmbrellaTutorial();
             
+        }else if(other.gameObject.name == "StaffUpgrade")
+        {
+            HAS_STAFF = true;
+            Destroy(other.gameObject);
+            Destroy(upgradeSpotlight.gameObject);
+            level2Controller.StaffTutorial();
         }
     }
 
