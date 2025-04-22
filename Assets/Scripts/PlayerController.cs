@@ -204,7 +204,6 @@ public class PlayerController : MonoBehaviour
         else if (!IsPaused)
         {
             Time.timeScale = 1;
-            level1Controller.HideTutorial();
             pausePanel.gameObject.SetActive(false);
             pauseMenu.gameObject.SetActive(false);
             Cursor.visible = false;
@@ -379,6 +378,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Upgrade"))
         {
+            insanityController.IncreaseInsanity(250);
             UpgradeCheck(other);
         }else if (other.gameObject.CompareTag("LevelEnd"))
         { 
