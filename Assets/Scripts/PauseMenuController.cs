@@ -9,20 +9,17 @@ public class PauseMenuController : MonoBehaviour
     private bool isPaused;
 
     [SerializeField] private GameObject pausePanel;
-    [SerializeField] private GameObject pauseMenu;
 
     private void Start()
     {
         isPaused = controller.IsPaused;
         pausePanel.gameObject.SetActive(false);
-        pauseMenu.gameObject.SetActive(false);
     }
 
     public void ResumeGame()
     {
         controller.IsPaused = false;
         pausePanel.gameObject.SetActive(false);
-        pauseMenu.gameObject.SetActive(false);
         Time.timeScale = 1;
     }
 
