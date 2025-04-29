@@ -25,8 +25,8 @@ public class PauseMenuController : MonoBehaviour
 
     public void QuitGame()
     {
-        //Application.Quit();
-        EditorApplication.isPlaying = false;
+        Application.Quit();
+        //EditorApplication.isPlaying = false;
     }
 
     public void RestartGame()
