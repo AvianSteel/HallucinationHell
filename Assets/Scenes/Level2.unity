@@ -94602,7 +94602,7 @@ GameObject:
   - component: {fileID: 2104874474}
   - component: {fileID: 2104874473}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: FlowerCollider
   m_TagString: Flowers
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
