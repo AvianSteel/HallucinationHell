@@ -88,7 +88,10 @@ public class InsanityController : MonoBehaviour
     {
         insanityMonster.SetActive(true);
     }
-
+    /// <summary>
+    /// Increases insanity every second
+    /// </summary>
+    /// <returns></returns>
     IEnumerator InsaneUp()
     {
         while (true)

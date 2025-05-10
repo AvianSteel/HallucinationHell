@@ -383,6 +383,10 @@ public class PlayerController : MonoBehaviour
         }
     }
     #endregion
+    /// <summary>
+    /// Checks for what the upgrade is and performs an action based on what it is
+    /// </summary>
+    /// <param name="other"></param>
     private void UpgradeCheck(Collider other)
     {
         if(other.gameObject.name == "Umbrella")
@@ -400,7 +404,9 @@ public class PlayerController : MonoBehaviour
             level2Controller.StaffTutorial();
         }
     }
-
+    /// <summary>
+    /// Releases Temporary memory
+    /// </summary>
     private void OnDestroy()
     {
         forward.started -= Forward_started;
